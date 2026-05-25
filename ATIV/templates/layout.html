@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Seja bem vindo!</title>
+</head>
+<body>
+
+    <nav>
+        <a href="{{ url_for('filmes.home') }}">Home</a>
+
+        <a href="{{ url_for('filmes.listar_filmes') }}">
+            Listar cadastros
+        </a>
+
+        <a href="{{ url_for('filmes.form_add_filme') }}">
+            Cadastrar Cliente
+        </a>
+    </nav>
+
+    <hr>
+
+    {% block conteudo %}
+    {% endblock %}
+
+</body>
+</html>
