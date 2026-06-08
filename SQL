@@ -1,0 +1,126 @@
+-- criação do banco de dados
+CREATE DATABASE Escola3FN
+GO
+USE Escola3FN -- vai ativar o banco de dados
+
+--criar tabela
+
+CREATE TABLE Departamento(
+    id_depto INT PRIMARY KEY,
+    nome_depto VARCHAR (50) NOT NULL
+); --não precisa de ponto e virgula no MS SQLServer
+
+select * from Departamento
+
+CREATE TABLE Professor(
+    id_prof INT PRIMARY KEY,
+    nome_prof VARCHAR(60) not null,
+    id_depto INT FOREIGN KEY  REFERENCES Departamento(id_depto) --chave estrangeira
+);
+
+CREATE TABLE Disciplina(
+    cod_disc CHAR(5),
+    nome_disc VARCHAR(60) not null,
+    PRIMARY KEY(cod_disc)
+);
+
+CREATE TABLE Turma(
+   cod_turma CHAR(3),
+   cod_disc CHAR(5),
+   id_prof INT,
+   sala VARCHAR(10),
+   --dEFINIÇOES DE CHAVES
+   PRIMARY KEY (cod_turma),
+   FOREIGN KEY (cod_disc) REFERENCES Disciplina(cod_disc),
+   FOREIGN KEY (id_prof) REFERENCES Professor (id_prof)
+);
+
+
+CREATE TABLE Aluno (
+    id_matricula INT PRIMARY KEY,
+    nome VARCHAR(60) NOT NULL
+);
+
+CREATE TABLE Telefone (
+    id_telefone INT IDENTITY(1,1) PRIMARY KEY,
+    id_matricula INT FOREIGN KEY REFERENCES Aluno(id_matricula),
+    numero VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE Matricula (
+    id_matricula INT FOREIGN KEY REFERENCES Aluno(id_matricula),
+    cod_turma CHAR(3) FOREIGN KEY REFERENCES Turma(cod_turma),
+    PRIMARY KEY (id_matricula, cod_turma)
+);
+            
+
+--verificar as tabelas do banco de dados Escola3FN
+SELECT * FROM SYS.tables
+
+ --INSERIR DADOS
+ --INSERT INTO <NOME_TABELA> (COLUNA1, COLUNA2,...,COLUNA_N)
+ --VALUES (VALOR1, VALOR2, ..., VALORN)
+ INSERT INTO Departamento --NÃO PRECISA INFORMAR AS COLUNAS
+ VALUES (1, 'TI'), (2, 'Redes');  --SEPARAR OS REGISTROS/TUPLAS POR VIRGULAS
+
+--VERIFICAR DADOS CADASTRADOS
+SELECT * FROM Departamento
+
+INSERT INTO Professor VALUES 
+(10, 'Carlos', 1),
+(11, 'Julia', 1),
+(12, 'Pedro', 2);
+
+SELECT * FROM Turma
+
+INSERT INTO Disciplina VALUES 
+('BD001', 'Banco de Dados I'),
+('ALG01', 'Algoritmos'),
+('RED01', 'Redes de Computadores');
+SELECT * FROM Disciplina
+
+
+INSERT INTO Turma VALUES 
+('T1A', 'BD001', 10, 'Lab1'),
+('T1B', 'ALG01', 11, 'S10'),
+('T2A', 'RED01', 12, 'Lab2');
+SELECT * FROM Turma
+
+INSERT INTO Aluno VALUES 
+(101, 'Ana Silva'),
+(102, 'Bruno Costa'),
+(103, 'Carla Dias');
+SELECT * FROM Aluno
+
+INSERT INTO Telefone (id_matricula, numero) VALUES 
+(101, '11999999999'),
+(101, '11888888888'),
+(102, '11777777777'),
+(103, '11666666666');
+SELECT * FROM  Telefone
+
+INSERT INTO Matricula VALUES 
+(101, 'T1A'),
+(101, 'T1B'),
+(102, 'T1A'),
+(102, 'T1B'),
+(103, 'T2A');
+
+--ALGEBRA RELACIONAL
+
+--seleção (sigma) -retorna todas as colunas
+--projeto(pi) - retorna colunas especificas
+--retornar todos os dados da turma
+SELECT * FROM Turma
+--retornar todos os dados dos professores de departamento 1: sigma (id_depto = 1)(professor)
+SELECT * FROM Professor
+WHERE Id_depto = 1 
+
+--RETORNAR O CODIGO DA DISCIPLINA E A SALA DA TABELA DA TURMA: PI cod_disc, sala {turma}
+
+SELECT cod_disc, sala FROM turma
+
+--RETORNAR O CODIGO DA DISCIPLINA E A SALA DA TABELA TURMA, somente para as disciplinas
+--banco de dados e algoritmos: PI cod_disc, sala (SIGMA (cod_disc - BD001 v cod_disc - ALG01) turma)
+SELECT cod_disc, sala FROM turma
+WHERE cod_disc = 'BD001' OR cod_disc = 'ALG01'
